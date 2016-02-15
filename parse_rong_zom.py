@@ -26,10 +26,5 @@ for i in os.listdir(INPUT_DIR):
                 s = regex_sqr.sub(' ', s)
                 s = regex_space.sub(' ', s)
                 s = regex_space_begin.sub('', s)
-                newstring = ""
-                for item in s:
-                    if item.isupper():
-                        newstring += item.upper()
-                    else:
-                        newstring += item.lower()
-                output_file.write(newstring)
+                s = "".join(c.lower() if c.isupper() else c.upper() for c in s)
+                output_file.write(s)
