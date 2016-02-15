@@ -1,4 +1,7 @@
-#!/usr/bin/perl -npi
+#!/usr/bin/perl -pi
+
+use strict;
+use warnings;
 
 s%(\|\s*)?\@\d{1,3}[AB](\s*\*\|\|)?%%g;
 s%(?<!\|)\|(?!\|)%%g;
