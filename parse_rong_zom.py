@@ -26,5 +26,5 @@ for i in os.listdir(INPUT_DIR):
                 s = regex_sqr.sub(' ', s)
                 s = regex_space.sub(' ', s)
                 s = regex_space_begin.sub('', s)
-                s = "".join(c.lower() if c.isupper() else c.upper() for c in s)
+                s = s.swapcase()
                 output_file.write(s)
