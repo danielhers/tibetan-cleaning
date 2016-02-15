@@ -14,6 +14,7 @@ use warnings;
 my $line_id;
 my $chapter;
 BEGIN {
+    use bigint;
     $line_id = 10000001;
     $chapter = "";
 }
