@@ -1,17 +1,17 @@
-#!/usr/bin/perl -p
+#!/usr/bin/perl -pi
 
 use strict;
 use warnings;
 
-my %lexicon;
+our %lexicon;
 BEGIN {
+    use Text::CSV::Simple;
     my $parser = Text::CSV::Simple->new;
-    $parser->field_map(qw/syllable id/);
-    %lexicon = $parser->read_file("lexicon.txt");
+    %lexicon = reverse map {@$_} $parser->read_file("syllable-lexicon.txt");
 }
 
 my @ids;
-for $token (split) {
-    push @ids, $lexicon[$token] // -1;
+for my $token (split) {
+    push @ids, $lexicon{$token} // -1;
 }
-print join(" ", @ids);
+$_ = join(" ", @ids);

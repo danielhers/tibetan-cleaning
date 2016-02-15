@@ -11,12 +11,14 @@
 use strict;
 use warnings;
 
-my $line_id;
-my $chapter;
+our %file_id;
+our $line_id;
+our $chapter;
 BEGIN {
-    use bigint;
-    $line_id = 10000001;
+    $line_id = 1;
     $chapter = "";
+    my $i = 1;
+    $file_id{$_} = $i++ for @ARGV;
 }
 
 s%(?<!\|)\|(?!\|)%%g;
@@ -31,5 +33,6 @@ s%\s+$%%g;
 
 for my $line (split /\|\|\s*/) {
     $line =~ s/\s*(\|\s*)?(\@\d{1,3}[AB])(\s*\*\|\|)?\s*/$chapter = $2; ''/ge;
-    print join("\t", ($line_id++, $line, "NULL", "$ARGV $chapter")), "\n";
+    my $id = $file_id{$ARGV} . sprintf("%07d", $line_id++);
+    print join("\t", ($id, $line, "NULL", "$ARGV $chapter")), "\n";
 }
