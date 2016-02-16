@@ -7,7 +7,7 @@ our %lexicon;
 BEGIN {
     use Text::CSV::Simple;
     my $parser = Text::CSV::Simple->new;
-    %lexicon = map {@$_} $parser->read_file("syllables.txt");
+    %lexicon = reverse map {@$_} $parser->read_file("stems.txt");
     $lexicon[0] = 0;
 }
 

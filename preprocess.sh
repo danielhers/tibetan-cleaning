@@ -2,7 +2,7 @@
 
 DIR=$(dirname $0)
 prev=raw
-for step in clean tokenize enumerate; do
+for step in clean tokenize enumerate enum_stem stem; do
     echo Running "'$step'"
     rm -rfv "$step"/*
     mkdir -p "$step"
