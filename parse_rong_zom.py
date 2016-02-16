@@ -2,10 +2,10 @@
 import os
 import re
 
-INPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts'
-OUTPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts_clean'
+INPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts2'
+OUTPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts_clean2'
 
-regex_tri = re.compile('<[^>]*>')
+regex_tri = re.compile('&lt;((?!&gt;).)*&gt;|<[^>]*>')
 regex_sqr = re.compile('\[[^\]]*\]')
 regex_space = re.compile(r"\s{2,}")
 regex_space_begin = re.compile(r"^\s+")
