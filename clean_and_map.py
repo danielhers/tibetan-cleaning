@@ -1,23 +1,48 @@
 import argparse
 import os
+import re
 
 
-replacers = []
+substitutions = (
+    (r"\?+|"
+     r"&lt;(?:(?!&gt;).)*&gt;|"
+     r"<[^>]*>|"
+     r"^\s+|"
+     r"\s$"
+     r"^\|\|\s*", ""),
+    (r" \|\|", "\|\|"),
+    (r"\[\([^)]*\)\]|"
+     r"\s{2,}|"
+     r"(?:\|\s*)?@\d{1,3}[AB](?:\s*\*\|\|)?|"
+     r"(?<!\|)\|(?!\|)|"
+     r"&lt;|"
+     r"&amp;|"
+     r"[`#;]|"
+     r"\[[^\]]*\]|"
+     r"\d+|"
+     r"\.{2,}|"
+     r"\s{2,}", " "),
+)
 
+pattern = re.compile("|".join("(" + s[0] + ")" for s in substitutions))
 
-def merge(mapping, r):
-    for i, ((clean_start, clean_end), raw) in enumerate(mapping):
-        if clean_end <= r.raw_start:
-            pass
 
 def clean_and_map(infile, outfile, mapfile):
     with open(infile) as f:
-        s = f.read()
-    mapping = []
-    for replacer in replacers:
-        r = replacer(s)
-        s = r.apply(s)
-        merge(mapping, r)
+        raw = f.read()
+    raw = raw.replace("{", "(")
+    raw = raw.replace("}", ")")
+    raw = raw.replace("’", "\"")
+    mapping = [(0, 0)]
+    clean = ""
+    last_raw_end = 0
+    for m in pattern.finditer(raw):
+        clean += raw[last_raw_end:m.start()]
+        mapping.append((len(clean), m.start()))
+        clean += substitutions[m.lastindex - 1]
+        last_raw_end = m.end()
+        mapping.append((len(clean), last_raw_end))
+    clean += raw[last_raw_end:]
     with open(outfile, "w") as f:
         f.write(s)
     with open(mapfile, "w") as f:
@@ -25,7 +50,7 @@ def clean_and_map(infile, outfile, mapfile):
 
 
 def main():
-    argparser = argparse.ArgumentParser(description='Clean files and map spans.')
+    argparser = argparse.ArgumentParser(description="Clean files and map spans.")
     argparser.add_argument("indir", help="Input directory")
     argparser.add_argument("outdir", help="Output directory")
     args = argparser.parse_args()
