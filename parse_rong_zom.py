@@ -1,8 +1,8 @@
 import os
 import re
 
-INPUT_DIR = '/windows/data/tibetan/TextsToClean/Alignment_Test5 _unclean'
-OUTPUT_DIR = '/windows/data/tibetan/TextsToClean/Alignment_Test5_clean'
+INPUT_DIR = '/windows/data/tibetan/Alignment_Test5 _unclean'
+OUTPUT_DIR = '/windows/data/tibetan/Alignment_Test5_clean'
 
 regex_tri = re.compile('&lt;((?!&gt;).)*&gt;|<[^>]*>')
 regex_sqr = re.compile('\[[^\]]*\]')
