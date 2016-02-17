@@ -1,4 +1,5 @@
 import os
+import re
 
 # key is syll string value is syll id
 syllables = {}
@@ -25,6 +26,7 @@ syll_idf = dict(zip(syllables.keys(), [0] * len(syllables)))
 stem_idf = dict(zip(stems.values(), [0] * len(stems)))
 doc_size = 1000
 file_num = 0
+split_regex = re.compile("[^\w']+")
 
 for root, subdirs, files in os.walk(r'D:\Dev\tibetan-cleaning\tokenize'):
     for file in files:
@@ -32,14 +34,16 @@ for root, subdirs, files in os.walk(r'D:\Dev\tibetan-cleaning\tokenize'):
             with open(os.path.join(root, file), 'r') as input_file:
                 file_num += 1
                 print 'Working on file count: ' + str(file_num) + ' file name:' + os.path.join(root, file)
-                s = input_file.read().split()
+                s = split_regex.split(input_file.read())
                 i = 0
                 while i < len(s):
                     temp_syls = []
                     temp_stms = []
                     while True:
                         temp_syl = s[i].lower()
-                        if temp_syl not in temp_syls:
+                        if '|' in temp_syl:
+                            temp_syl.replace('|', '')
+                        if len(temp_syl) > 0 and temp_syl not in temp_syls:
                             temp_syls.append(temp_syl)
 
                             if temp_syl in syllables:
