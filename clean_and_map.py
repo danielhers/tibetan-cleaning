@@ -5,23 +5,26 @@ import re
 
 substitutions = (
     (r"\?+|"
+     r"(?:\|\s*)?@\d{1,3}[AB](?:\s*[*#]?\|\|)?\s*|"
      r"&lt;(?:(?!&gt;).)*&gt;|"
+     r"(?<!\|)\|(?!\|)|"
      r"<[^>]*>|"
      r"^\s+|"
      r"\s$"
-     r"^\|\|\s*", ""),
-    (r" \|\|", "\|\|"),
-    (r"\[\([^)]*\)\]|"
+     r"^\s*\|\|\s*", ""),
+    (r"(?<!\s)\|\|\s*", " ||\n"),
+    (r"(?<=\s)\|\|\s*", "||\n"),
+    (r"(?:\s*"
+     r"\[\([^)]*\)\]|"
      r"\s{2,}|"
-     r"(?:\|\s*)?@\d{1,3}[AB](?:\s*\*\|\|)?|"
      r"(?<!\|)\|(?!\|)|"
      r"&lt;|"
      r"&amp;|"
      r"[`#;]|"
      r"\[[^\]]*\]|"
      r"\d+|"
-     r"\.{2,}|"
-     r"\s{2,}", " "),
+     r"\.{2,}"
+     r")s*", " "),
 )
 
 pattern = re.compile("|".join("(" + s[0] + ")" for s in substitutions))
@@ -39,14 +42,14 @@ def clean_and_map(infile, outfile, mapfile):
     for m in pattern.finditer(raw):
         clean += raw[last_raw_end:m.start()]
         mapping.append((len(clean), m.start()))
-        clean += substitutions[m.lastindex - 1]
+        clean += substitutions[m.lastindex - 1][1]
         last_raw_end = m.end()
         mapping.append((len(clean), last_raw_end))
     clean += raw[last_raw_end:]
     with open(outfile, "w") as f:
-        f.write(s)
+        f.write(clean)
     with open(mapfile, "w") as f:
-        f.writelines(",".join(i for span in spans for i in span) + "\n" for spans in mapping)
+        f.writelines(",".join(map(str, offsets)) + "\n" for offsets in mapping)
 
 
 def main():

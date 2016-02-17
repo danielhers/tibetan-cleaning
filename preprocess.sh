@@ -11,7 +11,7 @@ for step in enumerate enum_stem stem; do
     mkdir -p "$step"
     cp -rv "$prev"/* "$step"/
     "$DIR"/"$step".pl "$step"/Kangyur_Lhasa/*/* "$step"/TENGYUR_ACIP/*/*/*
-#    zip -r "$step" "$step"/
+    zip -r "$step" "$step"/
     prev="$step"
 done
 echo Done
