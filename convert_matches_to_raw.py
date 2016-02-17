@@ -50,7 +50,7 @@ def convert_matches(in_matches, raw_files, out_matches):
 
     if out_matches == "-":
         for line in raw_matches:
-            print(",".join(line))
+            print(",".join(map(str, line)))
     else:
         with open(out_matches, "w") as f:
             writer = csv.writer(f)
