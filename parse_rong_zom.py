@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import os
 import re
 
-INPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts2'
-OUTPUT_DIR = os.getcwd() + r'/' + 'Rong-zom_rawTexts_clean2'
+INPUT_DIR = '/windows/data/tibetan/TextsToClean/Alignment_Test5 _unclean'
+OUTPUT_DIR = '/windows/data/tibetan/TextsToClean/Alignment_Test5_clean'
 
 regex_tri = re.compile('&lt;((?!&gt;).)*&gt;|<[^>]*>')
 regex_sqr = re.compile('\[[^\]]*\]')
@@ -26,5 +25,5 @@ for i in os.listdir(INPUT_DIR):
                 s = regex_sqr.sub(' ', s)
                 s = regex_space.sub(' ', s)
                 s = regex_space_begin.sub('', s)
-                s = s.swapcase()
+                # s = s.swapcase()
                 output_file.write(s)
