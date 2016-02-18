@@ -5,26 +5,26 @@ import re
 
 substitutions = (
     (r"\?+|"
-     r"(?:\|\s*)?@\d{1,3}[AB](?:\s*[*#]?\|\|)?\s*|"
+     r"^(?:\|\s*)?@\d{1,3}[AB]\s*[*#]*\s*\|\|\s*|"
+     r"\s*(?:\|\s*)?@\d{1,3}[AB]\s*[*#]*\s*|"
      r"&lt;(?:(?!&gt;).)*&gt;|"
      r"(?<!\|)\|(?!\|)|"
      r"<[^>]*>|"
      r"^\s+|"
-     r"\s$"
+     r"\s$|"
+     r"(?<=\s)\[[^\]]*\]\s*|"
      r"^\s*\|\|\s*", ""),
-    (r"(?<!\s)\|\|\s*", " ||\n"),
-    (r"(?<=\s)\|\|\s*", "||\n"),
-    (r"(?:\s*"
-     r"\[\([^)]*\)\]|"
+    (r"\s*\[\([^)]*\)\]\s*|"
      r"\s{2,}|"
-     r"(?<!\|)\|(?!\|)|"
-     r"&lt;|"
-     r"&amp;|"
-     r"[`#;]|"
-     r"\[[^\]]*\]|"
-     r"\d+|"
-     r"\.{2,}"
-     r")s*", " "),
+     r"\s*(?<!\|)\|(?!\|)\s*|"
+     r"\s*&lt;\s*|"
+     r"\s*&amp;\s*|"
+     r"\s*[`#;\s]+\s*|"
+     r"\s*\[[^\]]*\]\s+|"
+     r"\s*\d+\s*|"
+     r"\s*\.{2,}\s*", " "),
+    (r"(?<!\s)[*#]*\|\|\s*", " ||\n"),
+    (r"(?<=\s)[*#]*\|\|\s*", "||\n"),
 )
 
 pattern = re.compile("|".join("(" + s[0] + ")" for s in substitutions))
@@ -33,9 +33,7 @@ pattern = re.compile("|".join("(" + s[0] + ")" for s in substitutions))
 def clean_and_map(infile, outfile, mapfile):
     with open(infile) as f:
         raw = f.read()
-    raw = raw.replace("{", "(")
-    raw = raw.replace("}", ")")
-    raw = raw.replace("’", "\"")
+    raw = raw.replace("{", "(").replace("}", ")").replace("’", "\"")
     mapping = [(0, 0)]
     clean = ""
     last_raw_end = 0
