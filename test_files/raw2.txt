@@ -1,1 +1,1 @@
-par gpar spar dpar bar
+par gpar spar|| dpar bar
