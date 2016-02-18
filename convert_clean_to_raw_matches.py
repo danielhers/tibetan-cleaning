@@ -21,7 +21,7 @@ def convert_matches(in_matches, mapping, out_matches):
         raw_start2 = next(r for c, r in reversed(mapping2) if c <= clean_start2)
         raw_end1 = next(r for c, r in mapping1 if c >= clean_end1)
         raw_end2 = next(r for c, r in mapping2 if c >= clean_end2)
-        raw_matches.append(map(str, (raw_start1, raw_start2, raw_end1, raw_end2)))
+        raw_matches.append(map(str, (raw_start1, raw_start2, raw_end1, raw_end2, score)))
 
     with open(out_matches, "w") as f:
         f.writelines(",".join(m) + "\n" for m in raw_matches)
