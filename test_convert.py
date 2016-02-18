@@ -2,7 +2,7 @@ import unittest
 
 from os import unlink
 
-from convert_matches_to_raw import convert_matches
+from convert_syllable_to_char_matches import convert_matches
 
 
 class ConversionTest(unittest.TestCase):
