@@ -44,6 +44,7 @@ def clean_and_map(infile, outfile, mapfile):
         last_raw_end = m.end()
         mapping.append((len(clean), last_raw_end))
     clean += raw[last_raw_end:]
+    mapping.append((len(clean), len(raw)))
     with open(outfile, "w") as f:
         f.write(clean)
     with open(mapfile, "w") as f:

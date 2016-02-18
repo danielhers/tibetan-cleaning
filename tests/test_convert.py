@@ -25,7 +25,8 @@ class ConversionTest(unittest.TestCase):
                 res_map = f.readlines()
             with open("test_files/map%d_ref.txt" % i) as f:
                 ref_map = f.readlines()
-            self.assertSequenceEqual(ref_map, res_map)
+            for x in ref_map:
+                self.assertIn(x, res_map)
             unlink(map_file)
 
     def test_convert_syllable_to_char_matches(self):
