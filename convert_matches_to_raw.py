@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+from operator import itemgetter
 
 """
 Example:
@@ -31,30 +32,43 @@ def convert_matches(in_matches, raw_files, out_matches):
             raw_text.append(f.read())
 
     syllables = tuple(map(str.split, raw_text))
-    raw_matches = []
-    raw_pos = [0, 0]
-    clean_pos = [0, 0]
-    for line in clean_matches:
-        clean_start = [None, None]
-        clean_end = [None, None]
-        clean_start[0], clean_end[0], clean_start[1], clean_end[1] = map(int, line[:-1])
-        score = line[-1]
-        raw_start = [None, None]
-        raw_end = [None, None]
-        for i in (0, 1):
-            raw_pos[i] += sum(len(s) + 1 for s in syllables[i][clean_pos[i]:clean_start[i]])
-            clean_pos[i] = clean_start[i]
-            raw_start[i] = raw_pos[i]
-            raw_end[i] = raw_start[i] + sum(len(s) + 1 for s in syllables[i][clean_start[i]:clean_end[i]]) - 1
-        raw_matches.append([raw_start[0], raw_end[0], raw_start[1], raw_end[1], score])
+    raw_matches = [[], []]
+
+    # 0: txt 1 start, 1: txt 2 start, 2: txt 1 3ne, 3: txt 2 end
+    clean_spans = [[], [], [], []]
+    clean_spans[0], clean_spans[1], clean_spans[2], clean_spans[3], scores = zip(*clean_matches)
+    for i in xrange(0, 4):
+        clean_spans[i] = [int(x) for x in clean_spans[i]]
+
+    (indices_txt2, clean_spans[1]) = zip(*sorted(enumerate(clean_spans[1]), key=itemgetter(1)))
+    clean_spans[3] = [clean_spans[3][i] for i in indices_txt2]
+    for i in (0, 1):
+        raw_start = 0
+        clean_pos = 0
+        for match_num in xrange(0, len(clean_spans[0])):
+            raw_start += sum(len(s) + 1 for s in syllables[i][clean_pos:clean_spans[i][match_num]])
+            clean_pos = clean_spans[i][match_num]
+            raw_end = raw_start + sum(
+                len(s) + 1 for s in syllables[i][clean_pos:clean_spans[2 + i][match_num]]) - 1
+            raw_matches[i].append((raw_start, raw_end))
+
+    temp_raw_matches = [None] * len(raw_matches[1])
+    for i in xrange(0, len(raw_matches[1])):
+        temp_raw_matches[indices_txt2[i]] = raw_matches[1][i]
+    raw_matches[1] = temp_raw_matches
 
     if out_matches == "-":
-        for line in raw_matches:
-            print(",".join(map(str, line)))
+        for match_num in xrange(0, len(clean_spans[0])):
+            print(str(raw_matches[0][match_num][0]) + ',' + str(
+                raw_matches[1][match_num][0]) + ',' + str(raw_matches[0][match_num][1]) + ',' + str(
+                raw_matches[1][match_num][1]) + ',' + scores[match_num] + + '\n')
     else:
         with open(out_matches, "w") as f:
-            writer = csv.writer(f)
-            writer.writerows(raw_matches)
+            # writer = csv.writer(f)
+            for match_num in xrange(0, len(clean_spans[0])):
+                f.write(str(raw_matches[0][match_num][0]) + ',' + str(
+                    raw_matches[1][match_num][0]) + ',' + str(raw_matches[0][match_num][1]) + ',' + str(
+                    raw_matches[1][match_num][1]) + ',' + scores[match_num] + '\n')
 
 
 def main():
