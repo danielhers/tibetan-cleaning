@@ -24,7 +24,8 @@ out_matches:
 def convert_matches(in_matches, raw_files, out_matches):
     with open(in_matches) as f:
         reader = csv.reader(f)
-        clean_matches = sorted(list(map(tuple, reader)))
+        #clean_matches = sorted(list(map(tuple, reader)))
+        clean_matches = list(map(tuple, reader))
 
     raw_text = []
     for file in raw_files:
@@ -34,7 +35,7 @@ def convert_matches(in_matches, raw_files, out_matches):
     syllables = tuple(map(str.split, raw_text))
     raw_matches = [[], []]
 
-    # 0: txt 1 start, 1: txt 2 start, 2: txt 1 3ne, 3: txt 2 end
+    # 0: txt 1 start, 1: txt 2 start, 2: txt 1 end, 3: txt 2 end
     clean_spans = [[], [], [], []]
     clean_spans[0], clean_spans[1], clean_spans[2], clean_spans[3], scores = zip(*clean_matches)
     for i in range(0, 4):
@@ -61,7 +62,7 @@ def convert_matches(in_matches, raw_files, out_matches):
         for match_num in range(0, len(clean_spans[0])):
             print(str(raw_matches[0][match_num][0]) + ',' + str(
                 raw_matches[1][match_num][0]) + ',' + str(raw_matches[0][match_num][1]) + ',' + str(
-                raw_matches[1][match_num][1]) + ',' + scores[match_num] + + '\n')
+                raw_matches[1][match_num][1]) + ',' + scores[match_num] + '\n')
     else:
         with open(out_matches, "w") as f:
             # writer = csv.writer(f)
