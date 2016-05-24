@@ -34,8 +34,8 @@ def convert_matches(in_matches, raw_files, out_matches):
                 writer.writerow([
                     str(file_mapping[0][0][int(line[0])]),
                     str(file_mapping[1][0][int(line[1])]),
-                    str(file_mapping[0][1][int(line[2])]),
-                    str(file_mapping[1][1][int(line[3])]),
+                    str(file_mapping[0][1][int(line[2])-1]),
+                    str(file_mapping[1][1][int(line[3])-1]),
                     line[4]
                 ])
 
